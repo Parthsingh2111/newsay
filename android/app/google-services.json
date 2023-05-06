@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278545456778",
+    "project_id": "quantumitintership",
+    "storage_bucket": "quantumitintership.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278545456778:android:2ddea416f46229d3af5773",
+        "android_client_info": {
+          "package_name": "com.example.quantum_internship"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278545456778-jcsmjpib9fj2j7rbe11hrditfusnm4i5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7MQ5_3MYQuRYlzM0Pdcn3UQKKzZKzH88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278545456778-jcsmjpib9fj2j7rbe11hrditfusnm4i5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
