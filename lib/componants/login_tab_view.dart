@@ -1,14 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quantum_internship/componants/signup_tab_view.dart';
 import 'package:quantum_internship/componants/text_field.dart';
+import 'package:quantum_internship/screens/home_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class LoginTabView extends StatelessWidget {
-  LoginTabView({super.key});
+     LoginTabView({super.key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class LoginTabView extends StatelessWidget {
                             fontWeight: FontWeight.bold),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(right: 35, top: 13),
+                        padding: const EdgeInsets.only(right: 35, top: 13),
                         child: CustomTextField(
                           hintText: 'abc@gmail.com',
                           icon: Icons.mail,
@@ -153,15 +154,43 @@ class LoginTabView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Container(
-          height: 9.h,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(35), topRight: Radius.circular(35)),
-            color: Color(0xffFE0000),
-          ),
-          child: const Center(
-            child: Text("LOGIN"),
+        InkWell(
+          onTap: () async {
+            try {
+              final credential = await FirebaseAuth.instance
+                  .signInWithEmailAndPassword(
+                      email: emailController.text,
+                      password: passController.text)
+                  .then((value) {
+                print("USER SUCCESSFULLY SIGNED UP");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));
+              });
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'user-not-found') {
+                print('No user found for that email.');
+              } else if (e.code == 'wrong-password') {
+                print('Wrong password provided for that user.');
+              }
+            }
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => HomeScreen()));
+          },
+          child: Container(
+            height: 9.h,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(35), topRight: Radius.circular(35)),
+              color: Color(0xffFE0000),
+            ),
+            child: const Center(
+              child: Text(
+                "LOGIN",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
           ),
         ),
       ],

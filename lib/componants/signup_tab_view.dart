@@ -1,15 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:quantum_internship/componants/text_field.dart';
+import 'package:quantum_internship/screens/home_screen.dart';
 import 'package:quantum_internship/screens/login_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class SignUpTabView extends StatefulWidget {
+  SignUpTabView({super.key});
+
   @override
   State<SignUpTabView> createState() => _SignUpTabViewState();
 }
 
 class _SignUpTabViewState extends State<SignUpTabView> {
   bool checkValue = false;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,77 +57,40 @@ class _SignUpTabViewState extends State<SignUpTabView> {
                             fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 3.h),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 35),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: "Name",
-                            hintText: "Enter your name",
-                            labelStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17),
-                            suffixIcon: Icon(
-                              Icons.person,
-                              size: 30,
-                              color: Color.fromARGB(255, 214, 1, 1),
-                            ),
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 35),
+                        child: CustomTextField(
+                          hintText: 'Enter your name',
+                          icon: Icons.person,
+                          controller: nameController,
+                          lableText: 'Name',
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 35, top: 13),
+                        child: CustomTextField(
+                          hintText: 'abc@gmail.com',
+                          icon: Icons.mail,
+                          controller: emailController,
+                          lableText: 'Email',
                         ),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(right: 35, top: 13),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            hintText: "abc@gmail.com",
-                            labelStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17),
-                            suffixIcon: Icon(
-                              Icons.email,
-                              size: 30,
-                              color: Color.fromARGB(255, 214, 1, 1),
-                            ),
-                          ),
+                        child: CustomTextField(
+                
+                          hintText: '7424******',
+                          icon: Icons.phone,
+                          lableText: 'Contact no',
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 35, top: 13),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: "Contect no",
-                            hintText: "7424*****",
-                            labelStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17),
-                            suffixIcon: Icon(
-                              Icons.phone,
-                              size: 30,
-                              color: Color.fromARGB(255, 214, 1, 1),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 35, top: 13),
-                        child: TextField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            hintText: "Password",
-                            labelStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17),
-                            suffixIcon: Icon(
-                              Icons.lock,
-                              size: 30,
-                              color: Color.fromARGB(255, 214, 1, 1),
-                            ),
-                          ),
+                       Padding(
+                        padding: const EdgeInsets.only(right: 35, top: 13),
+                        child: CustomTextField(
+                          hintText: 'Password',
+                          icon: Icons.lock,
+                          controller: passController,
+                          lableText: 'Password',
                         ),
                       ),
                     ],
@@ -212,17 +183,46 @@ class _SignUpTabViewState extends State<SignUpTabView> {
           ),
         ),
         const SizedBox(height: 10),
-        Container(
-          height: 9.h,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(35), topRight: Radius.circular(35)),
-            color: Color(0xffFE0000),
-          ),
-          child: const Center(
-            child: Text(
-              "REGISTER",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+        InkWell(
+          onTap: () async {
+            if (passController.text == passController.text) {
+              try {
+                FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passController.text)
+                    .then(
+                      (value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      ),
+                    );
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'weak-password') {
+                  print('The password provided is too weak.');
+                } else if (e.code == 'email-already-in-use') {
+                  print('The account already exists for that email.');
+                }
+                print('error' + e.code.toString());
+              } catch (e) {
+                print('error' + e.toString());
+              }
+            } else {}
+          },
+          child: Container(
+            height: 9.h,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(35), topRight: Radius.circular(35)),
+              color: Color(0xffFE0000),
+            ),
+            child: const Center(
+              child: Text(
+                "REGISTER",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
           ),
         ),

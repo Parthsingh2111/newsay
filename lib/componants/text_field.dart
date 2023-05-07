@@ -5,13 +5,13 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.lableText,
     required this.hintText,
-    required this.controller,
+    this.controller,
     required this.icon,
   });
   final String lableText;
   final String hintText;
   final IconData icon;
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
+        labelText: lableText,
         labelStyle: const TextStyle(
             color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
         suffixIcon: Icon(
