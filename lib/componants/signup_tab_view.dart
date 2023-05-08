@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quantum_internship/componants/text_field.dart';
 import 'package:quantum_internship/screens/home_screen.dart';
-import 'package:quantum_internship/screens/login_screen.dart';
+import 'package:quantum_internship/screens/login_signup_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class SignUpTabView extends StatefulWidget {
@@ -78,13 +78,12 @@ class _SignUpTabViewState extends State<SignUpTabView> {
                       const Padding(
                         padding: EdgeInsets.only(right: 35, top: 13),
                         child: CustomTextField(
-                
                           hintText: '7424******',
                           icon: Icons.phone,
                           lableText: 'Contact no',
                         ),
                       ),
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.only(right: 35, top: 13),
                         child: CustomTextField(
                           hintText: 'Password',
@@ -195,7 +194,7 @@ class _SignUpTabViewState extends State<SignUpTabView> {
                       (value) => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => HomeScreen(),
                         ),
                       ),
                     );

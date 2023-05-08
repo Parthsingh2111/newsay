@@ -82,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                             child: Text("LOGIN"),
                           ),
                           SizedBox(
-                            child: Text("SIGN UP"),
+                            child: Text("SIGNUP"),
                           )
                         ],
                       ),

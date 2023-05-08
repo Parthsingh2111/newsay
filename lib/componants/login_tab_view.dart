@@ -7,7 +7,7 @@ import 'package:quantum_internship/screens/home_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class LoginTabView extends StatelessWidget {
-     LoginTabView({super.key});
+  LoginTabView({super.key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
@@ -105,7 +105,8 @@ class LoginTabView extends StatelessWidget {
                       width: 16.w,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Image.asset("assets/icons/google.png"),
+                        child: Image.asset(
+                            "assets/icons/google.png"), //here routing has not be done,since i used tabbar
                       ),
                     ),
                     SizedBox(
@@ -118,7 +119,8 @@ class LoginTabView extends StatelessWidget {
                       width: 16.w,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Image.asset("assets/icons/meta.png"),
+                        child: Image.asset(
+                            "assets/icons/meta.png"), //here routing has not be done,since i used tabbar
                       ),
                     ),
                   ],
@@ -140,7 +142,8 @@ class LoginTabView extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SignUpTabView())),
-                        text: " Register Now",
+                        text:
+                            " Register Now", //here routing has not be done,since i used tabbar
                         style: const TextStyle(
                           color: Color.fromARGB(255, 214, 1, 1),
                           fontWeight: FontWeight.bold,
@@ -163,10 +166,8 @@ class LoginTabView extends StatelessWidget {
                       password: passController.text)
                   .then((value) {
                 print("USER SUCCESSFULLY SIGNED UP");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               });
             } on FirebaseAuthException catch (e) {
               if (e.code == 'user-not-found') {

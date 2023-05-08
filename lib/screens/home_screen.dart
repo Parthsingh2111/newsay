@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:news_api_flutter_package/model/error.dart';
 import 'package:news_api_flutter_package/model/source.dart';
 import 'package:news_api_flutter_package/news_api_flutter_package.dart';
-import 'package:quantum_internship/screens/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:quantum_internship/provider/provider_function.dart';
+import 'package:quantum_internship/screens/downloaded_article.dart';
+import 'package:quantum_internship/screens/login_signup_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//final NewsAPI newsAPI = NewsAPI("4357a87c8af4482b855fdd7e0f6d614c");
-final NewsAPI newsAPI = NewsAPI("88bb86d0cf564075b8b5fd7b2c2f8936");
+final NewsAPI newsAPI = NewsAPI("4357a87c8af4482b855fdd7e0f6d614c");
+// final NewsAPI newsAPI = NewsAPI("88bb86d0cf564075b8b5fd7b2c2f8936");
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+  //s4.reference for our box
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // TextEditingController searchController = TextEditingController();
-
-  TextEditingController searchController = TextEditingController()
-    ..text = "Search";
+  @override
+  // void initState() {
+  //   context.read<Movementfun>().titlebox.clear();
+  //   context.read<Movementfun>().descbox.clear();
+  //   context.read<Movementfun>().sourcebox.clear();
+  //   super.initState();
+  // }
 
   Widget buildTopHeadlines() {
     return FutureBuilder<List<Article>>(
@@ -36,8 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildEverything() {
     return FutureBuilder<List<Article>>(
-        future: searchController.text.isNotEmpty
-            ? newsAPI.getEverything(query: searchController.text)
+        future: context.watch<Movementfun>().searchController.text.isNotEmpty
+            ? newsAPI.getEverything(
+                query: context.watch<Movementfun>().searchController.text)
             : newsAPI.getEverything(query: "trending"),
         builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
           return snapshot.connectionState == ConnectionState.done
@@ -66,14 +75,73 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("By-"),
-                        Text(
-                          article.source.name.toString(),
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 214, 1, 1),
-                          ),
+                        Row(
+                          children: [
+                            const Text("By-"),
+                            Text(
+                              article.source.name.toString(),
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 214, 1, 1),
+                              ),
+                            ),
+                          ],
                         ),
+
+                        InkWell(
+                          onTap: () {
+                            // context.read<Movementfun>().change();
+                            if (context
+                                    .read<Movementfun>()
+                                    .titlebox
+                                    .toMap()
+                                    .containsValue(article.title) ==
+                                false) {
+                              context.read<Movementfun>().titlebox.put(
+                                  context.read<Movementfun>().titlebox.length,
+                                  article.title);
+                              context.read<Movementfun>().sourcebox.put(
+                                    context
+                                        .read<Movementfun>()
+                                        .sourcebox
+                                        .length,
+                                    article.source.name,
+                                  );
+                              context.read<Movementfun>().descbox.put(
+                                    context.read<Movementfun>().descbox.length,
+                                    article.description,
+                                  );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Already Saved')));
+                            }
+                          },
+                          // icon: context.watch<Movementfun>().iconchange
+                          //     ? Icon(Icons.check)
+                          //     : Icon(Icons.add_box),
+                          child: Container(
+                            color: context
+                                    .read<Movementfun>()
+                                    .titlebox
+                                    .toMap()
+                                    .containsValue(article.title)
+                                ? Colors.green
+                                : Colors.red,
+                            child: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: Text(
+                                "save",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        )
+                        // Text(
+                        //   "jf",
+                        //   style: TextStyle(color: Colors.amber),
+                        // )
                       ],
                     ),
                   ),
@@ -156,60 +224,76 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.blue.shade50,
         appBar: AppBar(
-            centerTitle: true,
-            leading: IconButton(
-                visualDensity: VisualDensity.compact,
+          centerTitle: true,
+          leading: IconButton(
+              visualDensity: VisualDensity.compact,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+              },
+              icon: const RotatedBox(
+                quarterTurns: 2,
+                child: Icon(
+                  Icons.logout,
+                  color: Color.fromARGB(255, 214, 1, 1),
+                ),
+              )),
+          //   elevation: 0.2,
+          backgroundColor: Colors.blue.shade200,
+          title: const Center(
+            child: Text(
+              "Quantum News",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
+                          builder: (context) => const DownloadedScreen()));
                 },
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                )),
-            //   elevation: 0.2,
-            backgroundColor: Colors.blue.shade200,
-            title: const Center(
-              child: Text(
-                "Quantum News",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                icon: const Icon(Icons.download),
+                color: const Color.fromARGB(255, 214, 1, 1),
               ),
-            )),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                      hintText: "Search The Feed",
-                      fillColor: Colors.grey.shade200,
-                      filled: true,
-                      suffixIcon: const RotatedBox(
-                        quarterTurns: 1,
-                        child: Icon(
-                          Icons.tune,
-                          size: 30,
-                          color: Color.fromARGB(255, 214, 1, 1),
-                        ),
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search,
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: context.watch<Movementfun>().searchController,
+                decoration: InputDecoration(
+                    hintText: "Search The Feed",
+                    fillColor: Colors.grey.shade200,
+                    filled: true,
+                    suffixIcon: const RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(
+                        Icons.tune,
                         size: 30,
                         color: Color.fromARGB(255, 214, 1, 1),
-                      )),
-                ),
+                      ),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 30,
+                      color: Color.fromARGB(255, 214, 1, 1),
+                    )),
               ),
-              Container(
-                height: MediaQuery.of(context).size.longestSide,
-                child: buildEverything(),
-              ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: buildEverything(),
+            ),
+          ],
         ),
       ),
     );
